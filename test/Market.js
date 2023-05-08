@@ -24,9 +24,6 @@ contract('Market', (accounts) => {
         assert.equal(argus[1],description,"Description not match");
 
     })
-    
-
-
   });
 
   describe('List token on market place', () => {
@@ -37,25 +34,12 @@ contract('Market', (accounts) => {
       await token.createNFT(name, description,{ from: minter });
     });
 
-    // it('should prevent listing - contract not approved', () => {
-    //   return expectRevert(
-    //     market.listToken(
-    //     token.address,
-    //     tokenId,
-    //     price
-    //   ), 'ERC721: transfer caller is not owner nor approved');
-    // });
-    it("should prevent listing - not owner listing NFT",async()=>{
-        await token.approve(market.address, tokenId, {
-            from: minter
-          });
+    it("should prevent listing - seller did not approve the contract",()=>{
           return expectRevert(
-            market.ListToken(token.address,tokenId,price, { from: buyer }),
-            'Only Onwer can list NFT'
-          );
-
-
+            market.ListToken(token.address,tokenId,price, { from: minter }),
+            'ERC721: caller is not token owner or approved');
     });
+
     it('should execute listing', async () => {
       await token.approve(market.address, tokenId, {
         from: minter
